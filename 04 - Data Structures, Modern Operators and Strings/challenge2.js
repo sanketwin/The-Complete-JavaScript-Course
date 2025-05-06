@@ -77,6 +77,7 @@ for (const odd of odds) {
 
 // averageOdds /= odds.length;
 averageOdds = averageOdds / odds.length;
+
 console.log('Average Odds - ', averageOdds);
 
 //3.
@@ -102,3 +103,6 @@ for (const player of game.scored) {
 }
 
 console.log(scores);
+
+const a = '' || 'Sanket';
+const b = '' && 'Sanket';
