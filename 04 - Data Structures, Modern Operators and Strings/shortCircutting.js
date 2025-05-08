@@ -43,42 +43,34 @@ const restaurant = {
   },
 };
 
-// -------------- Destructuring --------------
+console.log('--------- OR ---------');
 
-// SPREAD, because of RIGHT side of =
-const arr = [1, 2, ...[3, 4]];
+// Use ANY data type, return ANY data time, short-circuting
+console.log(3 || 'Sanket');
+console.log('Sanket' || 3);
+console.log('' || 'Sanket');
+console.log(true || 0);
+console.log(undefined || null);
 
-//REST, because of LEFT side of =
-const [a, b, ...others] = [2, 3, 4, 5];
-console.log(a, b, others);
+console.log(undefined || 0 || '' || 'Hello' || 23 || null);
 
-const [pizza, , risotto, ...otherFood] = [
-  ...restaurant.mainMenu,
-  ...restaurant.starterMenu,
-];
+restaurant.numGuest = 0;
+const guest1 = restaurant.numGuest ? restaurant.numGuest : 10;
+console.log(guest1);
 
-console.log(pizza, risotto, otherFood);
+const guest2 = restaurant.numGuest || 10;
+console.log(guest2);
 
-//Objects
-const { sat, ...weekDays } = restaurant.openingHours;
-console.log(sat, weekDays);
+console.log('--------- AND ---------');
 
-// -------------- Functions --------------
+console.log(0 && 'Sanket');
+console.log(7 && 'Sanket');
 
-const add = function (...numbers) {
-  console.log(numbers);
-  let sum = 0;
-  for (let i = 0; i < numbers.length; i++) {
-    sum += numbers[i];
-  }
-  console.log(sum);
-};
+console.log('Hello' && 23 && null && 'Sanket');
 
-add(2, 3);
-add(5, 3, 7, 2);
-add(1, 2, 3, 4, 6, 7);
+if (restaurant.orderPizza) {
+  restaurant.orderPizza('mashrooms', 'spinach');
+}
 
-const x = [23, 5, 6, 7];
-add(...x);
+restaurant.orderPizza && restaurant.orderPizza('mashrooms', 'Olive');
 
-restaurant.orderPizza('mashrooms', 'onins', 'olives', 'spinach');
