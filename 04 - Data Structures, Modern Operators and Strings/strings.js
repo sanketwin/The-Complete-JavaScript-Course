@@ -48,12 +48,12 @@ console.log(airline.toUpperCase());
 
 // Fix the capitalization in name
 
-const passenger = 'sAnKet'; //Sanket
-const passengerLower = passenger.toLowerCase();
-const passengerCorrect =
-  passengerLower[0].toUpperCase() + passengerLower.slice(1);
+// const passenger = 'sAnKet'; //Sanket
+// const passengerLower = passenger.toLowerCase();
+// const passengerCorrect =
+//   passengerLower[0].toUpperCase() + passengerLower.slice(1);
 
-console.log(passengerCorrect);
+// console.log(passengerCorrect);
 
 // Comparing email
 
@@ -108,3 +108,55 @@ const checkBaggage = function (items) {
 checkBaggage('I have a laptop, some food and a pocket Knife');
 checkBaggage('Socks and Camera');
 checkBaggage('Got some snacks and a gun for protection');
+
+//Split Method
+
+console.log('a+very+nice+string'.split('+'));
+console.log('Sanket Rasal'.split(' '));
+const [firstName, lastName] = 'Sanket Rasal'.split(' ');
+console.log(firstName);
+console.log(lastName);
+
+//Join Method
+
+const newName = ['Mr.', firstName, lastName.toUpperCase()].join(' ');
+console.log(newName);
+
+const capitalizeName = function (name) {
+  const names = name.split(' ');
+  const namesUpper = [];
+  for (const n of names) {
+    // namesUpper.push(n[0].toUpperCase() + n.slice(1));
+    namesUpper.push(n.replace(n[0], n[0].toUpperCase()));
+  }
+  console.log(namesUpper.join(' '));
+};
+
+capitalizeName('jessica ann smith davis');
+
+// Padding a string
+
+const message = 'Go to gate 23!';
+console.log(message.padStart(25, '+'));
+console.log(message.padEnd(25, '+'));
+
+const maskCreditCard = function (number) {
+  const str = number + '';
+  const last = str.slice(-4);
+  return last.padStart(str.length, '*');
+};
+
+console.log(maskCreditCard(4236484648464644));
+
+//Repeat
+
+const message2 = 'Bad weather... All departues deplayed...\n';
+console.log(message2.repeat(5));
+
+const planesInLine = function (n) {
+  console.log(`There are ${n} planes in line ${'🛩️'.repeat(n)}`);
+};
+
+planesInLine(2);
+planesInLine(5);
+planesInLine(12);
