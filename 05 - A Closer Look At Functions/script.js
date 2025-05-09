@@ -67,45 +67,45 @@ const sanket = {
 
 //SECTION First-class & Higher-order functions -----------------
 
-const oneWord = function (str) {
-  return str.replaceAll(' ', '').toLowerCase();
-};
+// const oneWord = function (str) {
+//   return str.replaceAll(' ', '').toLowerCase();
+// };
 
-const upperFirstWord = function (str) {
-  const [first, ...others] = str.split(' ');
-  return [first.toUpperCase(), ...others].join(' ');
-};
+// const upperFirstWord = function (str) {
+//   const [first, ...others] = str.split(' ');
+//   return [first.toUpperCase(), ...others].join(' ');
+// };
 
-//Higher order function
-const transformer = function (str, fn) {
-  console.log(`Original string : ${str}`);
-  console.log(`Transformed string: ${fn(str)}`);
-  console.log(`Transformed by: ${fn.name}`);
-};
+// //Higher order function
+// const transformer = function (str, fn) {
+//   console.log(`Original string : ${str}`);
+//   console.log(`Transformed string: ${fn(str)}`);
+//   console.log(`Transformed by: ${fn.name}`);
+// };
 
-transformer('JavaScript is the best!', upperFirstWord);
-transformer('JavaScript is the best!', oneWord);
+// transformer('JavaScript is the best!', upperFirstWord);
+// transformer('JavaScript is the best!', oneWord);
 
 //NOTE: JS uses callback functions all the time.
 
 //SECTION Function returning function -----------------
 
-const greet = function (greeting) {
-  return function (name) {
-    console.log(`${greeting} ${name}!`);
-  };
-};
+// const greet = function (greeting) {
+//   return function (name) {
+//     console.log(`${greeting} ${name}!`);
+//   };
+// };
 
-const greeterHey = greet('Hey');
+// const greeterHey = greet('Hey');
 
-greeterHey('Sanket');
-greeterHey('Durga');
+// greeterHey('Sanket');
+// greeterHey('Durga');
 
 //Same function using arrow function
 
-const greet1 = (greeting) => (name) => console.log(`${greeting} ${name}!`);
+// const greet1 = (greeting) => (name) => console.log(`${greeting} ${name}!`);
 
-greet1('Hi')('Sanket');
+// greet1('Hi')('Sanket');
 
 //SECTION The call and apply methods -----------------
 
@@ -114,6 +114,82 @@ const airIndia = {
   iataCode: 'AI',
   bookings: [],
   book(flightNum, name) {
-    console.log(`${name} booked a seat on ${this.airline} flight `);
+    console.log(
+      `${name} booked a seat on ${this.airline} flight ${this.iataCode}${flightNum}`
+    );
+    this.bookings.push({ flight: `${this.iataCode}${flightNum}`, name });
   },
 };
+
+// airIndia.book(234, 'Sanket Rasal');
+// airIndia.book(134, 'Durga Rasal');
+// console.log(airIndia);
+
+const spiceJet = {
+  airline: 'SpiceJet',
+  iataCode: 'SJ',
+  bookings: [],
+};
+
+const book = airIndia.book;
+
+//Does not work
+// book(23, 'Sarah Williams');
+
+//Call method
+// book.call(spiceJet, 23, 'Sarah Williams');
+// console.log(spiceJet);
+
+// book.call(airIndia, 235, 'John Dow');
+// console.log(airIndia);
+
+// //Apply Method
+// const flightData = [586, 'George Cooper'];
+// book.apply(spiceJet, flightData);
+// console.log(spiceJet);
+
+// book.call(spiceJet, ...flightData);
+
+//Bind Method
+
+// const bookSJ = book.bind(spiceJet);
+// const bookAI = book.bind(airIndia);
+// bookSJ(27, 'Sanket Rasal');
+// bookAI(26, 'Durgas Rasal');
+
+//Bine method with event listeners
+
+airIndia.planes = 300;
+airIndia.buyPlane = function () {
+  console.log(this);
+  this.planes++;
+  console.log(this.planes);
+};
+
+// airIndia.buyPlane();
+
+document
+  .querySelector('.buy')
+  .addEventListener('click', airIndia.buyPlane.bind(airIndia));
+
+// Partial Application
+
+// const addTax = (rate, value) => value + value * rate;
+
+// console.log(addTax(0.1, 200));
+
+// const addVAT = addTax.bind(null, 0.23);
+// addVAT = value => value + value * 0.23
+
+//Function calling another funtion
+
+const addTaxRate = (rate) => {
+  return (value) => {
+    return value + value * rate;
+  };
+};
+
+const addVAT2 = addTaxRate(0.23);
+
+console.log(addVAT2(100));
+console.log(addVAT2(120));
