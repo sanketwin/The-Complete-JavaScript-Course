@@ -88,3 +88,32 @@ transformer('JavaScript is the best!', oneWord);
 
 //NOTE: JS uses callback functions all the time.
 
+//SECTION Function returning function -----------------
+
+const greet = function (greeting) {
+  return function (name) {
+    console.log(`${greeting} ${name}!`);
+  };
+};
+
+const greeterHey = greet('Hey');
+
+greeterHey('Sanket');
+greeterHey('Durga');
+
+//Same function using arrow function
+
+const greet1 = (greeting) => (name) => console.log(`${greeting} ${name}!`);
+
+greet1('Hi')('Sanket');
+
+//SECTION The call and apply methods -----------------
+
+const airIndia = {
+  airline: 'AirIndia',
+  iataCode: 'AI',
+  bookings: [],
+  book(flightNum, name) {
+    console.log(`${name} booked a seat on ${this.airline} flight `);
+  },
+};
