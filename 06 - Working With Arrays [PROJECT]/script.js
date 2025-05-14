@@ -133,8 +133,18 @@ console.log(movements);
 
 //Maximum Value
 
-const max = movements.reduce(
-  (acc, mov) => (acc > mov ? acc : mov),
-  movements[0]
-);
-console.log(max);
+// const max = movements.reduce(
+//   (acc, mov) => (acc > mov ? acc : mov),
+//   movements[0]
+// );
+// console.log(max);
+
+// PIPELINE
+
+const eurToUSD = 1.1;
+const totalDepositUSD = movements
+  .filter((mov) => mov > 0)
+  .map((mov) => mov * eurToUSD)
+  .reduce((prev, curr) => prev + curr, 0);
+
+console.log(totalDepositUSD);
