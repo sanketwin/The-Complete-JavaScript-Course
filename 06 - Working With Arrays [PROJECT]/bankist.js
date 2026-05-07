@@ -20,6 +20,8 @@ const account1 = {
     '2026-05-05T10:00:00.000Z',
     '2026-05-06T14:30:00.000Z',
   ],
+  locale: 'en-IN',
+  currency: 'INR',
 };
 
 const account2 = {
@@ -37,6 +39,8 @@ const account2 = {
     '2023-01-17T10:00:00.000Z',
     '2023-01-18T14:30:00.000Z',
   ],
+  locale: 'en-US',
+  currency: 'USD',
 };
 
 const account3 = {
@@ -54,6 +58,8 @@ const account3 = {
     '2023-01-17T10:00:00.000Z',
     '2023-01-18T14:30:00.000Z',
   ],
+  locale: 'en-US',
+  currency: 'USD',
 };
 
 const account4 = {
@@ -71,6 +77,8 @@ const account4 = {
     '2023-01-17T10:00:00.000Z',
     '2023-01-18T14:30:00.000Z',
   ],
+  locale: 'en-US',
+  currency: 'USD',
 };
 
 const accounts = [account1, account2, account3, account4];
@@ -117,6 +125,13 @@ const formatMovementDate = function (date) {
   return `${day}/${month}/${year}`;
 };
 
+const formatCurrency = function (value, locale, currency) {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency,
+  }).format(value);
+};
+
 const displayMovements = function (account, sort = false) {
   containerMovements.innerHTML = '';
 
@@ -132,13 +147,19 @@ const displayMovements = function (account, sort = false) {
     const type = movement > 0 ? 'deposit' : 'withdrawal';
     const displayDate = formatMovementDate(date);
 
+    const formattedMov = formatCurrency(
+      movement,
+      account.locale,
+      account.currency,
+    );
+
     const html = `
     <div class="movements__row">
         <div class="movements__type movements__type--${type}">${
           i + 1
         } ${type}</div>
         <div class="movements__date">${displayDate}</div>
-        <div class="movements__value">${movement.toFixed(2)}€</div>
+        <div class="movements__value">${formattedMov}</div>
     </div>`;
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
@@ -170,7 +191,7 @@ const updateUI = function (acc) {
 
 const displayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${acc.balance}€`;
+  labelBalance.textContent = `${formatCurrency(acc.balance, acc.locale, acc.currency)}`;
 };
 
 const displaySummary = function (acc) {
@@ -178,12 +199,13 @@ const displaySummary = function (acc) {
     .filter((mov) => mov > 0)
     .reduce((prev, curr) => prev + curr, 0);
 
-  labelSumIn.textContent = `${incomes}€`;
+  labelSumIn.textContent = `${formatCurrency(incomes, acc.locale, acc.currency)}`;
 
   const out = acc.movements
     .filter((mov) => mov < 0)
     .reduce((prev, curr) => prev + curr, 0);
-  labelSumOut.textContent = `${Math.abs(out)}€`;
+
+  labelSumOut.textContent = `${formatCurrency(Math.abs(out), acc.locale, acc.currency)}`;
 
   const interest = acc.movements
     .filter((mov) => mov > 0)
@@ -191,14 +213,34 @@ const displaySummary = function (acc) {
     .filter((int) => int >= 1)
     .reduce((prev, curr) => prev + curr, 0);
 
-  labelSumInterest.textContent = `${interest}€`;
+  labelSumInterest.textContent = `${formatCurrency(interest, acc.locale, acc.currency)}`;
 };
 
-let currentAccount;
+const startLogOutTimer = function () {
+  let time = 300;
+  const tick = function () {
+    const min = String(Math.floor(time / 60)).padStart(2, 0);
+    const sec = String(time % 60).padStart(2, 0);
+    labelTimer.textContent = `${min}:${sec}`;
 
-currentAccount = account1;
-updateUI(currentAccount);
-containerApp.style.opacity = 100;
+    if (time === 0) {
+      clearInterval(timer);
+      labelWelcome.textContent = `Log in to get started`;
+      containerApp.style.opacity = 0;
+    }
+
+    time--;
+  };
+  tick();
+  const timer = setInterval(tick, 1000);
+  return timer;
+};
+
+let currentAccount, timer;
+
+// currentAccount = account1;
+// updateUI(currentAccount);
+// containerApp.style.opacity = 100;
 
 // Login Functionality
 btnLogin.addEventListener('click', function (e) {
@@ -206,7 +248,7 @@ btnLogin.addEventListener('click', function (e) {
   currentAccount = accounts.find(
     (acc) => acc.userName === inputLoginUsername.value,
   );
-  console.log(currentAccount);
+
   if (currentAccount?.pin === Number(inputLoginPin.value)) {
     console.log('LOGIN');
 
@@ -236,6 +278,8 @@ btnLogin.addEventListener('click', function (e) {
 
     inputLoginPin.blur();
 
+    clearInterval(timer);
+    timer = startLogOutTimer();
     updateUI(currentAccount);
   }
 });
@@ -262,6 +306,10 @@ btnTransfer.addEventListener('click', function (e) {
 
     //Update UI
     updateUI(currentAccount);
+
+    //Reset Timer
+    clearInterval(timer);
+    timer = startLogOutTimer();
   }
   inputTransferAmount.value = inputTransferTo.value = '';
 });
@@ -292,14 +340,20 @@ btnLoan.addEventListener('click', function (e) {
     amount > 0 &&
     currentAccount.movements.some((mov) => mov >= amount * 0.1)
   ) {
-    //Add the movement
-    currentAccount.movements.push(amount);
+    setTimeout(function () {
+      //Add the movement
+      currentAccount.movements.push(amount);
 
-    // Add loan date
-    currentAccount.movementsDates.push(new Date().toISOString());
+      // Add loan date
+      currentAccount.movementsDates.push(new Date().toISOString());
 
-    //Update UI
-    updateUI(currentAccount);
+      //Update UI
+      updateUI(currentAccount);
+
+      //Reset Timer
+      clearInterval(timer);
+      timer = startLogOutTimer();
+    }, 2500);
   }
   inputLoanAmount.value = '';
 });
